@@ -34,7 +34,7 @@ struct binary {
 	int fd;
 	size_t file_size;
 	size_t read_ret;
-	char elf_head[0x100000];
+	char *elf_head;
 	char flags[FSIZE][0x20];
 } bin;
 
@@ -267,9 +267,12 @@ int main(int argc, char *argv[])
 		goto _exit;
 	}
 
+	bin.elf_head = (char *)malloc(bin.f_st.st_size);
 	glob_e_hdr = SET_ELF(bin.elf_head);
 	glob_e_hdr = CHECK_ELF(bin.f_st.st_size);
 	INFO_ELF();
+
+	free(bin.elf_head);
 
 _exit:	exit(-1);
 }
